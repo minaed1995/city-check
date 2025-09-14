@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="fa">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>جستجوی شهر — City Search</title>
+  <style>
+    :root{--bg:#f7f7fb;--card:#ffffff;--accent:#0b69ff;--muted:#666}
+    body{font-family:Tahoma, 'Helvetica Neue', Arial; background:var(--bg); margin:0; padding:20px; color:#111}
+    .app{max-width:720px;margin:18px auto}
+    .card{background:var(--card);border-radius:12px;padding:18px;box-shadow:0 6px 20px rgba(20,20,50,.06)}
+    h1{margin:0 0 6px;font-size:20px}
+    p.lead{margin:0 0 16px;color:var(--muted);font-size:14px}
+    .search-row{display:flex;gap:8px}
+    input[type="search"]{flex:1;padding:12px 14px;border-radius:10px;border:1px solid #e6e9ef;font-size:16px}
+    button{background:var(--accent);color:#fff;border:none;padding:0 14px;border-radius:10px;font-weight:600;cursor:pointer}
+    .controls{margin-top:12px;display:flex;gap:8px;align-items:center}
+    .small{font-size:13px;color:var(--muted)}
+    ul.results{list-style:none;padding:0;margin:12px 0 0;max-height:38vh;overflow:auto}
+    li.city{padding:10px 12px;border-radius:8px;margin-bottom:8px;border:1px solid #f0f2f7}
+    li.city .name{font-weight:600}
+    .found{background:#e9fbff;border-color:#cfeffd}
+    .notfound{color:#b00}
+    .footer{margin-top:14px;font-size:13px;color:var(--muted)}
+    @media (max-width:520px){body{padding:12px}.card{padding:14px}h1{font-size:18px}}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="card">
+      <h1>جستجوی شهر</h1>
+      <p class="lead">اسم شهری که می‌خواید بررسی کنید را تایپ کنید. اگر پیدا شد، یعنی ارسال انجام می‌شود؛ اگر پیدا نشد، متأسفانه ارسال نداریم.</p>
+
+      <div class="search-row">
+        <input id="q" type="search" placeholder="نام شهر را وارد کنید..." aria-label="search">
+        <button id="btnSearch">جستجو</button>
+      </div>
+
+      <ul id="results" class="results" aria-live="polite"></ul>
+
+      <div class="footer">این صفحه کاملاً آنلاین و بدون نیاز به فایل یا لینک اضافی است. کافیست لینک را باز کنید و جستجو کنید.</div>
+    </div>
+  </div>
+
+  <script>
+    // لیست ثابت شهرها (می‌توانید این لیست را بروزرسانی کنید)
+    const cities = [
+      "تهران", "مشهد", "اصفهان", "تبریز", "شیراز", "اهواز", "کرج", "قم", "کرمانشاه", "ارومیه",
+      "زنجان", "رشت", "کرمان", "یزد", "ساری", "بندرعباس", "همدان", "بوشهر", "خرم‌آباد", "سنندج"
+    ];
+
+    const resultsEl = document.getElementById('results');
+    const qInput = document.getElementById('q');
+
+    function normalize(s){ return (s||'').trim().toLocaleLowerCase(); }
+
+    function search(){
+      const query = normalize(qInput.value);
+      resultsEl.innerHTML = '';
+      if(!query){ return; }
+      const found = cities.filter(c => normalize(c) === query);
+      if(found.length){
+        resultsEl.innerHTML = `<li class="city found">${found[0]} — ارسال انجام می‌شود</li>`;
+      } else {
+        resultsEl.innerHTML = `<li class="city notfound">متأسفانه ارسال نداریم</li>`;
+      }
+    }
+
+    document.getElementById('btnSearch').addEventListener('click', search);
+    qInput.addEventListener('keydown', e => { if(e.key==='Enter'){ search(); } });
+  </script>
+</body>
+</html>
